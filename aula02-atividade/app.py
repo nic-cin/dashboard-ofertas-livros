@@ -75,6 +75,7 @@ def main():
         livros_filtrados = dados.busca_por_titulo(livros, busca)
 
         if livros_filtrados:
+            st.write("Foram encontrados {} livros com o termo: {}".format(len(livros_filtrados), busca))
             tabela = montar_tabela(livros_filtrados)
             st.dataframe(tabela, use_container_width=True)
         else:
