@@ -41,14 +41,21 @@ def contar_por_faixa(livros):
     return contagem
 
 
+
 def main():
-    st.set_page_config(page_title="Dashboard de Livros", page_icon="📚", layout="wide")
+    st.set_page_config(
+        page_title="Dashboard de Livros",
+        page_icon="📚",
+        layout="wide"
+    )
+    
+
     st.title("📚 Dashboard de Livros")
 
     livros = dados.carregar_livros()
-    tabela = montar_tabela(livros)
 
     col1, col2, col3, col4 = st.columns(4)
+
     qtd_livros = len(livros)
     col1.metric("Total de Livros", qtd_livros)
 
@@ -59,10 +66,23 @@ def main():
     col3.metric("Qtd. livros 5 Estrelas", cinco_estrelas)
 
     mais_caro = dados.encontrar_mais_caro(livros)
-    col4.metric("Livro mais caro", f"£{mais_caro["preco"]}")
+    col4.metric("Livro mais caro", f"£{mais_caro['preco']:.2f}")
     col4.caption(mais_caro["titulo"])
 
-    st.dataframe(tabela)
+    busca = st.text_input("Buscar por título")
+
+    if busca:
+        livros_filtrados = dados.busca_por_titulo(livros, busca)
+
+        if livros_filtrados:
+            tabela = montar_tabela(livros_filtrados)
+            st.dataframe(tabela, use_container_width=True)
+        else:
+            st.warning("Nenhum livro encontrado com o termo: {}".format(busca), icon="⚠️")
+
+    else:
+        tabela = montar_tabela(livros)
+        st.dataframe(tabela, use_container_width=True)
 
 
 if __name__ == "__main__":
